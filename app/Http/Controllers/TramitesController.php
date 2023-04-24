@@ -9,9 +9,11 @@ use App\Models\Proceso;
 use App\Models\Persona;
 use App\Models\Cliente;
 use App\Models\Abogado;
+use App\Models\Tipopretencion;
+use App\Models\Detallepretencion;
+use App\Models\Detalleproceso;
+
 use Illuminate\Support\Facades\DB;
-
-
 
 class TramitesController extends Controller
 {
@@ -115,5 +117,49 @@ class TramitesController extends Controller
             'success' => true,
             'tramites'=>$procesos
         ]);
+    }
+
+    public function crearTramite( Request $request ){
+        $validator  = \Validator::make($request->all(), [
+            'fecha' => 'required',
+            'estado' => 'required',
+            'hechosOcurridos' => 'required',
+            'abogado_id' => 'required',
+            'cliente_id' => 'required',
+            'tipoproceso_id' => 'required',
+            'valor_medida'=>'required',
+            'tipopretencion_id'=>'required',
+            'detallePretencionCliente'=>'required',
+            'declaracionCliente'=>'required'
+         ]);  
+
+         if( $validator->fails() ){
+            return response()->json(['errors'=>$validator->errors()->all(),'status'=>422]);
+         }else{
+
+
+            $proceso = new Proceso();
+            $proceso->fecha = $request->fecha;
+            $proceso->estado = $request->estado;
+            $proceso->hechosOcurridos = $request->hechosOcurridos;
+            $proceso->abogado_id = $request->abogado_id;
+            $proceso->cliente_id = $request->cliente_id;
+            $proceso->tipoproceso_id = $request->tipo_id;
+            $proceso->save();
+            
+            if( $proceso->save() ){
+                $detalleproceso = new Detalleproceso();
+                $detalleproceso->declaracionDemandante=$request->declaracionCliente;
+                $detalleproceso->declaracionDemandado = $request->declaracionDemandado;
+                $detalleproceso->procesos_id = $proceso->id;
+                $detalleproceso->save();
+                
+                
+
+            }
+            
+            
+
+         }
     }
 }

@@ -20,7 +20,7 @@ class Proceso extends Model
         'cliente_id',
         'tipoproceso_id',
         'juzgado_id',
-        'pretenciones_id',
+         
     ];   
     public function archivos()
     {
@@ -47,11 +47,11 @@ class Proceso extends Model
         return $this->belongsTo(Juzgado::class, 'juzgado_id', 'id');
     }
 
-    public function pretencion()
+   /*  public function pretencion()
     {
         return $this->belongsTo(Pretencion::class, 'pretenciones_id', 'id');
     }
-
+ */
 
 
 }

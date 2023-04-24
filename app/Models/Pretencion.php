@@ -15,7 +15,9 @@ class Pretencion extends Model
         'id',
         'descripcion',
         'fecha',
-        'valorMedida'
+        'valorMedida',
+        'tipopretension_id',
+        'proceso_id'
     ];
 
     
@@ -24,9 +26,9 @@ class Pretencion extends Model
         return $this->hasOne(Detallepretencion::class, 'pretencion_id');
     }
 
-    public function proceso()
+   /*  public function proceso()
     {
         return $this->hasOne(Proceso::class, 'pretenciones_id'  );
-    }
+    } */
 }
 

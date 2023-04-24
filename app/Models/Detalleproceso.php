@@ -12,8 +12,7 @@ class Detalleproceso extends Model
     protected $primaryKey = 'id';
     public $timestamps = false;
     protected $fillable = [
-        'id',
-        'detalles',
+        'id',        
         'declaracionDemandante',
         'declaracionDemandado',
         'procesos_id'
