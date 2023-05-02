@@ -13,21 +13,19 @@ class Detallepretencion extends Model
     public $timestamps = false;
     protected $fillable = [
         'id',
-        'fechaDeclaracion',
         'detallePretencionDemandante',
-        'datallePretencionDemandado',
+        'detallePretencionDemandado',
         'pretencion_id',
-        'tipopretencion_id'
     ];
-    
+
     public function pretencion()
     {
         return $this->belongsTo(Pretencion::class, 'pretencion_id', 'id');
     }
-    public function tipopretencion()
+   /*  public function tipopretencion()
     {
         return $this->belongsTo(Tipopretencion::class, 'tipopretencion_id', 'id');
     }
-
+ */
 
 }

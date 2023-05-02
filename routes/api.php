@@ -18,14 +18,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+//CLIENTES
 Route::post('/clientes/agregar', [App\Http\Controllers\DatosPersonales::class, 'agregarCliente']);
 Route::post('/clientes/actualizar', [App\Http\Controllers\DatosPersonales::class, 'actualizarCliente']);
 Route::post('/clientes/eliminar', [App\Http\Controllers\DatosPersonales::class, 'eliminarCliente']);
 
+// ABOGADOS
 Route::post('/abogados/agregar', [App\Http\Controllers\DatosPersonales::class, 'agregarAbogado']);
 Route::post('/abogados/actualizar', [App\Http\Controllers\DatosPersonales::class, 'actualizarAbogado']);
 Route::post('/abogados/eliminar', [App\Http\Controllers\DatosPersonales::class, 'eliminarAbogado']);
 
+//TIPO TRAMITES
 
 Route::post('/tipotramite/agregar', [App\Http\Controllers\TramitesController::class, 'crearTipotramite']);
 Route::post('/tipotramite/actualizar', [App\Http\Controllers\TramitesController::class, 'actualizarTipotramite']);
@@ -34,8 +37,18 @@ Route::post('/tipotramite/eliminar', [App\Http\Controllers\TramitesController::c
 
 Route::post('/login', [App\Http\Controllers\LoginController::class, 'verificarCredencial']);
 
+//RETORNO
 Route::post('/clientes/retornarclientes', [App\Http\Controllers\DatosPersonales::class, 'retornarClientes']);
 Route::post('/abogados/retornarabogados', [App\Http\Controllers\DatosPersonales::class, 'retornarAbogados']);
 Route::post('/tipotramites/retornartipotramite', [App\Http\Controllers\TramitesController::class, 'retornarTipoTramites']);
+Route::post('/clientes/retornarclientesbasico', [App\Http\Controllers\DatosPersonales::class, 'retornarClientesBasico']);
+Route::post('/abogados/retornarabogadosbasico', [App\Http\Controllers\DatosPersonales::class, 'retornarAbogadosBasico']);
+Route::post('/juzgado/retornarjuzgadobasico', [App\Http\Controllers\TramitesController::class, 'retornarJuzgados']);
+Route::post('/pretenciones/retornartipopretenciones', [App\Http\Controllers\TramitesController::class, 'retornarTipoPretencion']);
+
+//TRAMITES
+Route::post('/tramite/agregar', [App\Http\Controllers\TramitesController::class, 'crearTramite']);
 
 Route::post('/tramite/listar', [App\Http\Controllers\TramitesController::class, 'retornarTramites']);
+
+
