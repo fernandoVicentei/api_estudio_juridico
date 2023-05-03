@@ -48,7 +48,6 @@ Route::post('/pretenciones/retornartipopretenciones', [App\Http\Controllers\Tram
 
 //TRAMITES
 Route::post('/tramite/agregar', [App\Http\Controllers\TramitesController::class, 'crearTramite']);
-
 Route::post('/tramite/listar', [App\Http\Controllers\TramitesController::class, 'retornarTramites']);
-
-
+Route::post('/tramite/buscar', [App\Http\Controllers\TramitesController::class, 'buscarTramite']);
+Route::post('/pretencion/buscar', [App\Http\Controllers\TramitesController::class, 'buscarPretenciones']);

@@ -113,15 +113,18 @@ class TramitesController extends Controller
         ]);
     }
 
-    public function retornarTramites(){
-
+    public function retornarTramites()
+    {
         $procesos = Proceso::select('procesos.fecha', 'procesos.estado', 'procesos.hechosOcurridos',
             DB::raw("CONCAT(persona.nombre, ' ', persona.apellido1, ' ', persona.apellido2) AS abogado"),
-            DB::raw("CONCAT(persona_c.nombre, ' ', persona_c.apellido1, ' ', persona_c.apellido2) AS cliente"))
+            DB::raw("CONCAT(persona_c.nombre, ' ', persona_c.apellido1, ' ', persona_c.apellido2) AS cliente"),
+            'procesos.id'
+        )
         ->join('abogados', 'abogados.id', '=', 'procesos.abogado_id')
         ->join('persona', 'persona.id', '=', 'abogados.persona_id')
         ->join('clientes', 'clientes.id', '=', 'procesos.cliente_id')
         ->join('persona as persona_c', 'persona_c.id', '=', 'clientes.persona_id')
+        ->orderBy('procesos.id', 'DESC')
         ->get();
 
         return response()->json([
@@ -212,6 +215,70 @@ class TramitesController extends Controller
 
     }
 
+    public function buscarTramite(Request $request){
+        $validator  = Validator::make($request->all(), [
+            'idTramite' => 'required',
+         ]);
 
+         if( $validator->fails() ){
+            return response()->json(['errors'=>$validator->errors()->all(),'status'=>422]);
+         }else{
+            $proceso = Proceso::find($request->idTramite);
+            $pretenciones = Pretencion::where('proceso_id', $request->idTramite)->first();
+            $proceso_R=[
+                'id'=>$proceso->id,
+                'fecha'=>$proceso->fecha,
+                'estado'=>$proceso->estado,
+                'hechosOcurridos'=>$proceso->hechosOcurridos,
+                'abogado_id'=>$proceso->abogado_id,
+                'cliente_id'=>$proceso->cliente_id,
+                'tipoproceso_id'=>$proceso->tipoproceso_id,
+                'juzgado_id'=>$proceso->juzgado_id,
+                'tipopretencion_id'=>$pretenciones->tipopretension_id,
+            ];
+            return response()->json([
+                'status' => 200,
+                'tramite'=>$proceso_R
+            ]);
+         }
+
+    }
+
+    public function buscarPretenciones(Request $request){
+        $idTramite = $request->idTramite;
+
+        $pretenciones = Pretencion::where('proceso_id', $idTramite)->first();
+        if(  isset($pretenciones) ){
+            $detallepretencion = Detallepretencion::where('pretencion_id', $pretenciones->id)->first();
+            if(  isset($detallepretencion) ){
+                return response()->json([
+                    'status' => 200,
+                    'tipopretencion_id'=> $pretenciones->tipopretension_id,
+                    'valorMedida'=> $pretenciones->valorMedida,
+                    'detallePretencionDemandante'=> $detallepretencion->detallePretencionDemandante,
+                    'detallePretencionDemandado'=> $detallepretencion->detallePretencionDemandado,
+                ]);
+
+            }else{
+                return response()->json([
+                    'status' => 200,
+                    'tipopretencion_id'=> $pretenciones->tipopretension_id,
+                    'valorMedida'=> $pretenciones->valorMedida,
+                    'detallePretencionDemandante'=> null,
+                    'detallePretencionDemandado'=> null,
+                ]);
+            }
+
+        }else{
+            return response()->json([
+                'status' => 200,
+                'tipopretencion_id'=> null,
+                'valorMedida'=> null,
+                'detallePretencionDemandante'=> null,
+                'detallePretencionDemandado'=> null,
+            ]);
+        }
+
+    }
 
 }
