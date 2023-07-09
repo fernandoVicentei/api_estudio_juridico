@@ -34,7 +34,6 @@ Route::post('/tipotramite/agregar', [App\Http\Controllers\TramitesController::cl
 Route::post('/tipotramite/actualizar', [App\Http\Controllers\TramitesController::class, 'actualizarTipotramite']);
 Route::post('/tipotramite/eliminar', [App\Http\Controllers\TramitesController::class, 'eliminarTipotramite']);
 
-
 Route::post('/login', [App\Http\Controllers\LoginController::class, 'verificarCredencial']);
 
 //RETORNO
@@ -48,6 +47,15 @@ Route::post('/pretenciones/retornartipopretenciones', [App\Http\Controllers\Tram
 
 //TRAMITES
 Route::post('/tramite/agregar', [App\Http\Controllers\TramitesController::class, 'crearTramite']);
+Route::post('/tramite/editar', [App\Http\Controllers\TramitesController::class, 'editarTramite']);
 Route::post('/tramite/listar', [App\Http\Controllers\TramitesController::class, 'retornarTramites']);
 Route::post('/tramite/buscar', [App\Http\Controllers\TramitesController::class, 'buscarTramite']);
 Route::post('/pretencion/buscar', [App\Http\Controllers\TramitesController::class, 'buscarPretenciones']);
+Route::post('/detalle/buscar', [App\Http\Controllers\TramitesController::class, 'buscarDetalleProceso']);
+
+//JUZGADOS
+Route::post('/juzgado/retornarjuzgados', [App\Http\Controllers\JuzgadoController::class, 'retornarJuzgados']);
+Route::post('/juzgado/actualizar', [App\Http\Controllers\JuzgadoController::class, 'editarJuzgados']);
+Route::post('/juzgado/agregar', [App\Http\Controllers\JuzgadoController::class, 'agregarJuzgados']);
+
+

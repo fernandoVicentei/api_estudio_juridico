@@ -21,9 +21,10 @@ use Illuminate\Support\Facades\DB;
 class TramitesController extends Controller
 {
     public function crearTipotramite(Request $request){
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'nombre' => 'required|min:5|max:40',
             'descripcion'=>'required|min:10|max:60',
+            'precio'=>'required'
         ]);
 
         if ($validator->fails())
@@ -33,6 +34,7 @@ class TramitesController extends Controller
             $tipoproceso= new TipoProceso();
             $tipoproceso->proceso = $request->nombre;
             $tipoproceso->descripcion = $request->descripcion;
+            $tipoproceso->precioinicial = $request->precio;
             $tipoproceso->save();
             if( $tipoproceso->save() ){
                 return response()->json([
@@ -47,9 +49,10 @@ class TramitesController extends Controller
     }
 
     public function actualizarTipotramite(Request $request){
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'nombre' => 'required|min:5|max:40',
             'descripcion'=>'required|min:10|max:60',
+            'precio'=>'required',
             'id'=>'required'
         ]);
 
@@ -60,6 +63,7 @@ class TramitesController extends Controller
             $tipoproceso=  TipoProceso::find($request->id);
             $tipoproceso->proceso = $request->nombre;
             $tipoproceso->descripcion = $request->descripcion;
+            $tipoproceso->precioinicial = $request->precio;
             $tipoproceso->save();
             if( $tipoproceso->save() ){
                 return response()->json([
@@ -171,6 +175,7 @@ class TramitesController extends Controller
                 $presupuesto->asunto = $request->asunto;
                 $presupuesto->monto = $request->monto;
                 $presupuesto->fecha = $request->fecha;
+                $presupuesto->procesos_id = $proceso->id;
                 $presupuesto->estado = 1;
                 $presupuesto->save();
 
@@ -279,6 +284,117 @@ class TramitesController extends Controller
             ]);
         }
 
+    }
+
+
+    public function buscarDetalleProceso(Request $request){
+        $idTramite = $request->idTramite;
+        $detalle = Detalleproceso::where('procesos_id',$idTramite)->first();
+        $presupuestoIncial = Presupuesto::where('procesos_id',$idTramite)->first();
+
+        if( isset($presupuestoIncial) ){
+            $detalleT = [
+                'status'=>200,
+                'detalleCliente'=>$detalle->declaracionDemandante,
+                'detalleDemandado'=>$detalle->declaracionDemandado,
+                'presupuestoinicial'=>$presupuestoIncial->monto ,
+            ];
+
+        }else{
+            $detalleT = [
+                'status'=>200,
+                'detalleCliente'=>$detalle->declaracionDemandante,
+                'detalleDemandado'=>$detalle->declaracionDemandado,
+                'presupuestoinicial'=>0 ,
+            ];
+        }
+        return response()->json( $detalleT );
+    }
+
+    public function editarTramite( Request $request ){
+        $validator  = Validator::make($request->all(), [
+            'idTramite'=>'required',
+            'fecha' => 'required',
+            'estado' => 'required',
+            'hechosOcurridos' => 'required',
+            'abogado_id' => 'required',
+            'cliente_id' => 'required',
+            'tipoproceso_id' => 'required',
+            'valor_medida'=>'required',
+            'tipopretencion_id'=>'required',
+            'detallePretencionCliente'=>'required',
+            'declaracionCliente'=>'required'
+         ]);
+
+         if( $validator->fails() ){
+            return response()->json(['errors'=>$validator->errors()->all(),'status'=>422]);
+         }else{
+            $proceso = Proceso::find($request->idTramite);
+            $proceso->fecha = $request->fecha;
+            $proceso->estado = $request->estado;
+            $proceso->hechosOcurridos = $request->hechosOcurridos;
+            $proceso->abogado_id = $request->abogado_id;
+            $proceso->cliente_id = $request->cliente_id;
+            $proceso->tipoproceso_id = $request->tipoproceso_id;
+            $proceso->juzgado_id = $request->juzgado_id;
+            $proceso->save();
+
+            if( $proceso->save() ){
+                $detalleproceso = Detalleproceso::where('procesos_id', $request->idTramite )->first();
+                $detalleproceso->declaracionDemandante=$request->declaracionCliente;
+                $detalleproceso->declaracionDemandado = $request->declaracionDemandado;
+                $detalleproceso->save();
+
+                $presupuesto = Presupuesto::where('procesos_id', $request->idTramite )->first();
+                if( isset( $presupuesto) ){
+                    $presupuesto->asunto = 'PRESUPUESTO INICIAL';
+                    $presupuesto->monto = $request->monto;
+                    $presupuesto->fecha = $request->fecha;
+                    $presupuesto->estado = 1;
+                    $presupuesto->save();
+                }else{
+                    $presupuesto = new Presupuesto();
+                    $presupuesto->asunto = 'PRESUPUESTO INICIAL';
+                    $presupuesto->monto = $request->monto;
+                    $presupuesto->fecha = $request->fecha;
+                    $presupuesto->procesos_id =$request->idTramite;
+                    $presupuesto->estado = 1;
+                    $presupuesto->save();
+                }
+
+                $pretencion = Pretencion::where('proceso_id', $request->idTramite)->first();
+                if(isset( $pretencion ) ){
+                    $pretencion->valorMedida = $request->valor_medida;
+                    $pretencion->tipopretension_id = $request->tipopretencion_id;
+                    $pretencion->save();
+                }else{
+                    $pretencion = new Pretencion();
+                    $pretencion->proceso_id = $proceso->id;
+                    $pretencion->fecha = $request->fecha;
+                    $pretencion->valorMedida = $request->valor_medida;
+                    $pretencion->tipopretension_id = $request->tipopretencion_id;
+                    $pretencion->save();
+                }
+                //  detallePretencionCliente
+                $detallepretencion = Detallepretencion::where('pretencion_id', $pretencion->id )->first();
+                if( isset( $detallepretencion ) ){
+                    $detallepretencion->detallePretencionDemandante = $request->detallePretencionCliente;
+                    $detallepretencion->detallePretencionDemandado = $request->detallePretencionDemandado;
+                    $detallepretencion->save();
+                }else{
+                    $detallepretencion = new Detallepretencion();
+                    $detallepretencion->detallePretencionDemandante = $request->detallePretencionCliente;
+                    $detallepretencion->detallePretencionDemandado = $request->detallePretencionDemandado;
+                    $detallepretencion->pretencion_id = $pretencion->id;
+                    $detallepretencion->save();
+                }
+
+                return response()->json([ 'status'=>200, 'mensaje'=>'El trámite se ha actualizado correctamente.' ]);
+            }else{
+                return response()->json([ 'status'=>500, 'errors'=>'Error al actualizar el proceso' ]);
+            }
+
+         }
     }
 
 }
