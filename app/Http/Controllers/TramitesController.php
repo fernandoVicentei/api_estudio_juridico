@@ -78,7 +78,7 @@ class TramitesController extends Controller
 
     }
     public function eliminarTipotramite(Request $request){
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'id'=>'required'
         ]);
 
