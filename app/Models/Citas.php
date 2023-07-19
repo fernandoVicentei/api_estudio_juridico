@@ -15,8 +15,14 @@ class Citas extends Model
         'id',
         'direccion',
         'fecha',
-        'asunto'
+        'asunto',
+        'proceso_id'
     ];
-    
+
+    public function proceso()
+    {
+        return $this->belongsTo(Proceso::class);
+    }
+
 
 }

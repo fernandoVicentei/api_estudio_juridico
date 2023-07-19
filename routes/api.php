@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\CitaController;
+use App\Http\Controllers\PretensionController;
+use App\Http\Controllers\TipoProcesoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -57,5 +60,21 @@ Route::post('/detalle/buscar', [App\Http\Controllers\TramitesController::class, 
 Route::post('/juzgado/retornarjuzgados', [App\Http\Controllers\JuzgadoController::class, 'retornarJuzgados']);
 Route::post('/juzgado/actualizar', [App\Http\Controllers\JuzgadoController::class, 'editarJuzgados']);
 Route::post('/juzgado/agregar', [App\Http\Controllers\JuzgadoController::class, 'agregarJuzgados']);
+
+
+Route::controller(TipoProcesoController::class)->group(function () {
+    Route::post('tiposProcesos/store','store');
+    Route::post('tiposProcesos/update','update');
+});
+
+Route::controller(CitaController::class)->group(function () {
+    Route::post('citas/store','store');
+    Route::post('citas/update','update');
+    Route::post('citas/filtrarCitasAbogado','filtrarCitasAbogado');
+});
+
+Route::controller(PretensionController::class)->group(function () {
+    Route::post('pretensiones/update','update');
+});
 
 

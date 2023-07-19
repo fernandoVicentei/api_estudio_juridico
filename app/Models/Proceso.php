@@ -20,12 +20,12 @@ class Proceso extends Model
         'cliente_id',
         'tipoproceso_id',
         'juzgado_id',
-         
-    ];   
+
+    ];
     public function archivos()
     {
         return $this->belongsToMany(Archivo::class, 'archivos_id'  );
-    }  
+    }
     public function detalleproceso()
     {
         return $this->hasOne(Detalleproceso::class, 'procesos_id' );
@@ -41,10 +41,15 @@ class Proceso extends Model
     public function tipoproceso()
     {
         return $this->belongsTo(TipoProceso::class, 'tipoproceso_id','id');
-    }   
+    }
     public function juzgado()
     {
         return $this->belongsTo(Juzgado::class, 'juzgado_id', 'id');
+    }
+
+    public function cita()
+    {
+        return $this->hasOne(Citas::class, 'proceso_id' );
     }
 
    /*  public function pretencion()
