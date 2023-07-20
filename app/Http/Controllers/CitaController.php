@@ -79,14 +79,16 @@ class CitaController extends Controller
                 return responseJson('Verifique los Parametros', ['abogadoID' => $abogadoID], 404);
             }
 
-            $citas = Citas::with('proceso')
-                ->whereHas('proceso', function ($q) {
-                    $q->where('abogado_id', $abogadoID);
-                })
-                ->where('fecha', Carbon::parse($fechaCita ? $fechaCita : $fechActual)->toDateString())
-                ->get();
+            if (!isset($fechaCita)) {
+                $citas = Citas::with('proceso')
+                    ->whereHas('proceso', function ($q) use ($abogadoID) {
+                        $q->where('abogado_id', $abogadoID);
+                    })
+                    /* ->whereDate('fecha', $fechaCita ? $fechaCita : $fechActual) */
+                    ->get();
+            }
 
-            return count($citas) > 0 ? responseJson('Listado Citas', $citas, 200) : responseJson('No se Encontraron Citas', $citas, 400);
+            return count($citas) > 0 ? responseJson('Listado Citas', ['citas' => $citas], 200) : responseJson('No se Encontraron Citas', $citas, 400);
         } catch (\Exception $e) {
             return responseJson('Server Error', [
                 'message' => $e->getMessage(),
