@@ -14,12 +14,12 @@ class LoginController extends Controller
      */
     public function index()
     {
-        
+
     }
 
     public function verificarCredencial(Request $request){
-        $validator = \Validator::make($request->all(), [
-            'codigo' => 'required|min:6|max:8',           
+        $validator = Validator::make($request->all(), [
+            'codigo' => 'required|min:6|max:8',
         ]);
 
         if ($validator->fails())
@@ -28,48 +28,48 @@ class LoginController extends Controller
         }else{
             $abogado = Abogado::where('codigo',$request->codigo)->first();
             if(isset($abogado)){
-                return response()->json([            
+                return response()->json([
                     'success' => true
                 ]);
             }else{
-                return response()->json([            
+                return response()->json([
                     'success' => false
                 ]);
             }
         }
     }
 
-  
+
     public function create()
     {
         //
     }
 
-   
+
     public function store(Request $request)
     {
         //
     }
 
-   
+
     public function show($id)
     {
         //
     }
 
-   
+
     public function edit($id)
     {
         //
     }
 
-   
+
     public function update(Request $request, $id)
     {
         //
     }
 
-   
+
     public function destroy($id)
     {
         //

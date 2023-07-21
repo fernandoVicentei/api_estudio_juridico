@@ -14,6 +14,7 @@ class Abogado extends Model
     protected $fillable = [
         'id',
         'codigo',
+        'estado',
         'persona_id'
     ];
 
@@ -21,11 +22,11 @@ class Abogado extends Model
     {
         return $this->belongsTo(Persona::class, 'persona_id', 'id');
     }
-    
+
     public function procesos()
     {
         return $this->hasMany(Proceso::class, 'abogado_id');
     }
 
-    
+
 }
