@@ -22,11 +22,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/clientes/agregar', [App\Http\Controllers\DatosPersonales::class, 'agregarCliente']);
 Route::post('/clientes/actualizar', [App\Http\Controllers\DatosPersonales::class, 'actualizarCliente']);
 Route::post('/clientes/eliminar', [App\Http\Controllers\DatosPersonales::class, 'eliminarCliente']);
+Route::post('/clientes/buscar', [App\Http\Controllers\DatosPersonales::class, 'buscarCliente']);
+
 
 // ABOGADOS
 Route::post('/abogados/agregar', [App\Http\Controllers\DatosPersonales::class, 'agregarAbogado']);
 Route::post('/abogados/actualizar', [App\Http\Controllers\DatosPersonales::class, 'actualizarAbogado']);
 Route::post('/abogados/eliminar', [App\Http\Controllers\DatosPersonales::class, 'eliminarAbogado']);
+Route::post('/abogados/buscar', [App\Http\Controllers\DatosPersonales::class, 'buscarAbogado']);
 
 //TIPO TRAMITES
 
@@ -59,3 +62,7 @@ Route::post('/juzgado/actualizar', [App\Http\Controllers\JuzgadoController::clas
 Route::post('/juzgado/agregar', [App\Http\Controllers\JuzgadoController::class, 'agregarJuzgados']);
 
 
+// TIPO PERSONAS
+Route::post('/tipopersona/listado', [App\Http\Controllers\TipoPersonaController::class, 'retornarLista']);
+
+//

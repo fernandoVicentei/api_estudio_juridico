@@ -26,6 +26,77 @@ class DatosPersonales extends Controller
         return $persona;
     }
 
+    public function buscarAbogado(Request $request){
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json(['errors'=>$validator->errors()->all(),'status'=>422]);
+        }else{
+            $abogado = Abogado::find($request->id);
+            $persona = Persona::find($abogado->persona_id);
+            $obj = [
+                'nombre'=>$persona->nombre,
+                'appaterno'=>$persona->apellido1,
+                'apmaterno'=>$persona->apellido2,
+                'cedula'=>$persona->cedula,
+                'celular'=>$persona->celular,
+                'direccion'=>$persona->direccion,
+                'fechaNacimiento'=>$persona->fechaNacimiento,
+                'genero'=>$persona->genero,
+                'estadocivil'=>$persona->estadocivil,
+                'tipopersona_id'=>$persona->tipopersona_id,
+                'codigo_acceso'=>$abogado->codigo,
+                'persona_id'=>$persona->id,
+                'estado'=> $abogado->estado
+            ];
+            return response()->json([
+                'success' => true,
+                'abogado'=>$obj
+            ]);
+        }
+
+
+
+    }
+
+    public function buscarCliente(Request $request){
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json(['errors'=>$validator->errors()->all(),'status'=>422]);
+        }else{
+            $cliente = Cliente::find($request->id);
+            $persona = Persona::find($cliente->persona_id);
+            $obj = [
+                'nombre'=>$persona->nombre,
+                'appaterno'=>$persona->apellido1,
+                'apmaterno'=>$persona->apellido2,
+                'cedula'=>$persona->cedula,
+                'celular'=>$persona->celular,
+                'direccion'=>$persona->direccion,
+                'fechaNacimiento'=>$persona->fechaNacimiento,
+                'genero'=>$persona->genero,
+                'estadocivil'=>$persona->estadocivil,
+                'tipopersona_id'=>$persona->tipopersona_id,
+                'persona_id'=>$persona->id,
+                'estado'=> $cliente->estado
+            ];
+            return response()->json([
+                'success' => true,
+                'cliente'=>$obj
+            ]);
+        }
+
+
+
+    }
+
     public function actualizarPersona($request){
         $persona = Persona::find($request->idpersona);
         $persona->nombre = $request->nombre ;
@@ -127,7 +198,6 @@ class DatosPersonales extends Controller
 
         $validator = Validator::make($request->all(), [
             'idCliente' => 'required',
-            'idPersona'=>'required',
 
         ]);
 
@@ -136,8 +206,19 @@ class DatosPersonales extends Controller
             return response()->json(['errors'=>$validator->errors()->all(),'status'=>422]);
         }else{
             $cliente = Cliente::find($request->idCliente);
-            $persona = Persona::find($request->idPersona);
-            if(isset($cliente)){
+            $cliente->estado = 0;
+            $cliente->Save();
+            if( $cliente->save() ){
+                return response()->json([
+                    'success' => true
+                ]);
+            }else{
+                return response()->json([
+                    'success' => false,
+                ]);
+            }
+           // $persona = Persona::find($request->idPersona);
+            /* if(isset($cliente)){
                 $res = $cliente->delete();
                 if($res){
                     $res = $persona->delete();
@@ -160,16 +241,16 @@ class DatosPersonales extends Controller
                 return response()->json([
                     'success' => false,
                 ]);
-            }
+            } */
         }
 
     }
 
     public function agregarAbogado(Request $request){
 
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'nombre' => 'required|min:3|max:100',
-            'cedula'=>'required|min:6|max:15',
+            'cedula'=>'required|min:6|max:11',
             'celular'=>'required|min:6|max:11',
             'direccion'=>'required|min:6|max:50',
             'fechaNacimiento'=>'required',
@@ -208,7 +289,7 @@ class DatosPersonales extends Controller
 
 
     public function actualizarAbogado(Request $request){
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'nombre' => 'required|min:3|max:100',
             'cedula'=>'required|min:6|max:15',
             'celular'=>'required|min:6|max:11',
@@ -223,6 +304,7 @@ class DatosPersonales extends Controller
         {
             return response()->json(['errors'=>$validator->errors()->all(),'status'=>422]);
         }else{
+
             $abogado = Abogado::find($request->id);
             $abogado->codigo = $request->codigo;
             $abogado->save();
@@ -247,9 +329,8 @@ class DatosPersonales extends Controller
 
     public function eliminarAbogado(Request $request){
 
-        $validator = \Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'idAbogado' => 'required',
-            'idPersona'=>'required',
         ]);
 
         if ($validator->fails())
@@ -257,6 +338,18 @@ class DatosPersonales extends Controller
             return response()->json(['errors'=>$validator->errors()->all(),'status'=>422]);
         }else{
             $abogado = Abogado::find($request->idAbogado);
+            $abogado->estado = 0;
+            $abogado->save();
+            if( $abogado->save() ){
+                return response()->json([
+                    'success' => true
+                ]);
+            }else{
+                return response()->json([
+                    'success' => false,
+                ]);
+            }
+           /*  $abogado = Abogado::find($request->idAbogado);
             $persona = Persona::find($request->idPersona);
             if(isset($abogado)){
                 $res = $abogado->delete();
@@ -281,12 +374,12 @@ class DatosPersonales extends Controller
                 return response()->json([
                     'success' => false,
                 ]);
-            }
+            } */
         }
     }
 
     public function retornarClientes(){
-        $clientes= Cliente::all();
+        $clientes= Cliente::orderBy('id','desc')->get();
         $clientes_datos =[];
         foreach ($clientes as $key => $value) {
             $persona = $value->persona;
@@ -309,13 +402,14 @@ class DatosPersonales extends Controller
         }
 
         return response()->json([
+            'success'=>true,
             'clientes'=>$clientes_datos
         ]);
 
     }
 
     public function retornarAbogados(){
-        $abogados= Abogado::all();
+        $abogados= Abogado::orderBy('id','desc')->get();
         $abogados_datos =[];
         foreach ($abogados as $key => $value) {
             $persona = $value->persona;
@@ -338,6 +432,7 @@ class DatosPersonales extends Controller
         }
 
         return response()->json([
+            'success'=>true,
             'abogados'=>$abogados_datos
         ]);
 
