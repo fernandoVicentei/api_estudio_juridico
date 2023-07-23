@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\PretensionController;
 use App\Http\Controllers\TipoProcesoController;
@@ -80,4 +83,8 @@ Route::controller(PretensionController::class)->group(function () {
     Route::post('pretensiones/update','update');
 });
 
-
+Route::prefix('auth')->group(function () {
+    Route::post('/register', [RegisterController::class, 'register']);
+    Route::post('/login', [LoginController::class, 'login']);
+    Route::post('/logout', [LogoutController::class, 'logout'])->middleware('auth:sanctum');
+});
