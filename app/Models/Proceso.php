@@ -14,6 +14,7 @@ class Proceso extends Model
     protected $fillable = [
         'id',
         'fecha',
+        'fechaSucesos',
         'estado',
         'hechosOcurridos',
         'abogado_id',

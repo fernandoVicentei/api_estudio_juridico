@@ -32,7 +32,7 @@ Route::prefix('auth')->group(function () {
 Route::group(
     [
         'prefix' => 'clientes',
-        'middleware' => 'auth:sanctum',
+        /* 'middleware' => 'auth:sanctum', */
         'controller' => DatosPersonales::class,
     ],
     function () {
@@ -49,7 +49,7 @@ Route::group(
 Route::group(
     [
         'prefix' => 'abogados',
-        'middleware' => 'auth:sanctum',
+        /* 'middleware' => 'auth:sanctum', */
         'controller' => DatosPersonales::class,
     ],
     function () {
@@ -58,15 +58,15 @@ Route::group(
         Route::post('eliminar', 'eliminarAbogado');
         Route::post('buscar', 'buscarCliente');
         Route::post('retornarAbogados', 'retornarAbogados');
-        Route::post('retornarAbogados', 'retornarabogadosbasico');
+        Route::post('retornarabogadosbasico', 'retornarabogadosbasico');
     }
 );
 
 //TIPO TRAMITES
 Route::group(
     [
-        'prefix' => 'tipotramite',
-        'middleware' => 'auth:sanctum',
+        'prefix' => 'tipotramites',
+        /* 'middleware' => 'auth:sanctum', */
         'controller' => TramitesController::class,
     ],
     function () {
@@ -74,15 +74,15 @@ Route::group(
         Route::post('actualizar', 'actualizarTipotramite');
         Route::post('eliminar', 'eliminarTipotramite');
         Route::post('retornartipotramite', 'retornarTipoTramites');
-        Route::post('pretenciones/retornartipopretenciones', 'retornarTipoPretencion');
+        Route::post('retornartipopretenciones', 'retornarTipoPretencion');
     }
 );
 
 //TRAMITES
 Route::group(
     [
-        'prefix' => 'tipotramite',
-        'middleware' => 'auth:sanctum',
+        'prefix' => 'tramite',
+        /* 'middleware' => 'auth:sanctum', */
         'controller' => TramitesController::class,
     ],
     function () {
@@ -97,7 +97,7 @@ Route::group(
 Route::group(
     [
         'prefix' => 'juzgado',
-        'middleware' => 'auth:sanctum',
+        /* 'middleware' => 'auth:sanctum', */
         'controller' => TramitesController::class,
     ],
     function () {
@@ -114,7 +114,7 @@ Route::group(
 Route::group(
     [
         'prefix' => 'tiposProcesos',
-        'middleware' => 'auth:sanctum',
+        /* 'middleware' => 'auth:sanctum', */
         'controller' => TipoProcesoController::class,
     ],
     function () {
@@ -127,7 +127,7 @@ Route::group(
 Route::group(
     [
         'prefix' => 'citas',
-        'middleware' => 'auth:sanctum',
+        /* 'middleware' => 'auth:sanctum', */
         'controller' => CitaController::class,
     ],
     function () {
@@ -141,7 +141,7 @@ Route::group(
 Route::group(
     [
         'prefix' => 'pretensiones',
-        'middleware' => 'auth:sanctum',
+        /* 'middleware' => 'auth:sanctum', */
         'controller' => PretensionController::class,
     ],
     function () {
