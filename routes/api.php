@@ -36,12 +36,18 @@ Route::group(
         'controller' => DatosPersonales::class,
     ],
     function () {
-        Route::post('agregar', 'store');
-        Route::post('actualizar', 'actualizarCliente');
-        Route::post('eliminar', 'eliminarCliente');
-        Route::post('buscar', 'buscarCliente');
-        Route::post('retornarclientes', 'retornarClientes');
-        Route::post('retornarclientesbasico', 'retornarClientesBasico');
+        Route::post('agregar', 'store')
+            ->middleware('permission:clientes.agregar');
+        Route::post('actualizar', 'actualizarCliente')
+            ->middleware('permission:clientes.actualizar');
+        Route::post('eliminar', 'eliminarCliente')
+            ->middleware('permission:clientes.eliminar');
+        Route::post('buscar', 'buscarCliente')
+            ->middleware('permission:clientes.buscar');
+        Route::post('retornarclientes', 'retornarClientes')
+            ->middleware('permission:clientes.retornarclientes');
+        Route::post('retornarclientesbasico', 'retornarClientesBasico')
+            ->middleware('permission:clientes.retornarclientesbasico');
     }
 );
 
@@ -53,12 +59,18 @@ Route::group(
         'controller' => DatosPersonales::class,
     ],
     function () {
-        Route::post('agregar', 'agregarAbogado');
-        Route::post('actualizar', 'actualizarAbogado');
-        Route::post('eliminar', 'eliminarAbogado');
-        Route::post('buscar', 'buscarCliente');
-        Route::post('retornarAbogados', 'retornarAbogados');
-        Route::post('retornarAbogados', 'retornarabogadosbasico');
+        Route::post('agregar', 'agregarAbogado')
+            ->middleware('permission:abogados.agregar');
+        Route::post('actualizar', 'actualizarAbogado')
+            ->middleware('permission:abogados.actualizar');
+        Route::post('eliminar', 'eliminarAbogado')
+            ->middleware('permission:abogados.eliminar');
+        Route::post('buscar', 'buscarCliente')
+            ->middleware('permission:abogados.buscar');
+        Route::post('retornarAbogados', 'retornarAbogados')
+            ->middleware('permission:abogados.retornarAbogados');
+        Route::post('retornarAbogadosBasicos', 'retornarabogadosbasico')
+            ->middleware('permission:abogados.retornarAbogadosBasicos');
     }
 );
 
@@ -70,26 +82,35 @@ Route::group(
         'controller' => TramitesController::class,
     ],
     function () {
-        Route::post('agregar', 'crearTipotramite');
-        Route::post('actualizar', 'actualizarTipotramite');
-        Route::post('eliminar', 'eliminarTipotramite');
-        Route::post('retornartipotramite', 'retornarTipoTramites');
-        Route::post('pretenciones/retornartipopretenciones', 'retornarTipoPretencion');
+        Route::post('agregar', 'crearTipotramite')
+            ->middleware('permission:tipotramite.agregar');
+        Route::post('actualizar', 'actualizarTipotramite')
+            ->middleware('permission:tipotramite.actualizar');
+        Route::post('eliminar', 'eliminarTipotramite')
+            ->middleware('permission:tipotramite.eliminar');
+        Route::post('retornartipotramite', 'retornarTipoTramites')
+            ->middleware('permission:tipotramite.retornartipotramite');
+        Route::post('pretenciones/retornartipopretenciones', 'retornarTipoPretencion')
+            ->middleware('permission:tipotramite.retornartipopretenciones');
     }
 );
 
 //TRAMITES
 Route::group(
     [
-        'prefix' => 'tipotramite',
+        'prefix' => 'tramites',
         'middleware' => 'auth:sanctum',
         'controller' => TramitesController::class,
     ],
     function () {
-        Route::post('agregar', 'crearTramite');
-        Route::post('editar', 'editarTramite');
-        Route::post('listar', 'retornarTramites');
-        Route::post('buscar', 'buscarTramite');
+        Route::post('agregar', 'crearTramite')
+            ->middleware('permission:tramites.agregar');
+        Route::post('editar', 'editarTramite')
+            ->middleware('permission:tramites.editar');
+        Route::post('listar', 'retornarTramites')
+            ->middleware('permission:tramites.retornarTramites');
+        Route::post('buscar', 'buscarTramite')
+            ->middleware('permission:tramites.buscar');
     }
 );
 
@@ -101,12 +122,18 @@ Route::group(
         'controller' => TramitesController::class,
     ],
     function () {
-        Route::post('retornarjuzgados', 'retornarJuzgados');
-        Route::post('actualizar', 'editarJuzgados');
-        Route::post('agregar', 'agregarJuzgados');
-        Route::post('retornarjuzgadobasico', 'retornarJuzgados');
-        Route::post('pretencion/buscar', 'buscarPretenciones');
-        Route::post('detalle/buscar', 'buscarDetalleProceso');
+        Route::post('retornarjuzgados', 'retornarJuzgados')
+            ->middleware('permission:juzgados.agregar');
+        Route::post('actualizar', 'editarJuzgados')
+            ->middleware('permission:juzgados.actualizar');
+        Route::post('agregar', 'agregarJuzgados')
+            ->middleware('permission:juzgados.agregar');
+        Route::post('retornarjuzgadobasico', 'retornarJuzgados')
+            ->middleware('permission:juzgados.retornarjuzgadobasico');
+        Route::post('pretencion/buscar', 'buscarPretenciones')
+            ->middleware('permission:juzgados.pretencionbuscar');
+        Route::post('detalle/buscar', 'buscarDetalleProceso')
+            ->middleware('permission:juzgados.detallebuscar');
     }
 );
 
@@ -118,8 +145,10 @@ Route::group(
         'controller' => TipoProcesoController::class,
     ],
     function () {
-        Route::post('store', 'store');
-        Route::post('update', 'update');
+        Route::post('store', 'store')
+            ->middleware('permission:tiposProcesos.store');
+        Route::post('update', 'update')
+            ->middleware('permission:tiposProcesos.update');
     }
 );
 
@@ -131,9 +160,12 @@ Route::group(
         'controller' => CitaController::class,
     ],
     function () {
-        Route::post('store', 'store');
-        Route::post('update', 'update');
-        Route::post('filtrarCitasAbogado', 'filtrarCitasAbogado');
+        Route::post('store', 'store')
+            ->middleware('permission:citas.store');
+        Route::post('update', 'update')
+            ->middleware('permission:citas.update');
+        Route::post('filtrarCitasAbogado', 'filtrarCitasAbogado')
+            ->middleware('permission:citas.filtrarCitasAbogado');
     }
 );
 
@@ -145,6 +177,7 @@ Route::group(
         'controller' => PretensionController::class,
     ],
     function () {
-        Route::post('update', 'update');
+        Route::post('update', 'update')
+            ->middleware('permission:pretensiones.update');
     }
 );
