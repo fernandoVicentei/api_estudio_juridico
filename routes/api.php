@@ -160,12 +160,12 @@ Route::group(
         'controller' => CitaController::class,
     ],
     function () {
-        Route::post('store', 'store')
-            ->middleware('permission:citas.store');
-        Route::post('update', 'update')
-            ->middleware('permission:citas.update');
-        Route::post('filtrarCitasAbogado', 'filtrarCitasAbogado')
-            ->middleware('permission:citas.filtrarCitasAbogado');
+        Route::post('store', 'store');
+            /* ->middleware('citas.store'); */
+        Route::post('update', 'update');
+            /* ->middleware('citas.update'); */
+        Route::post('filtrarCitasAbogado', 'filtrarCitasAbogado');
+            /* ->middleware('citas.filtrarCitasAbogado'); */
     }
 );
 
