@@ -5,10 +5,12 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\DatosPersonales;
+use App\Http\Controllers\JuzgadoController;
 use App\Http\Controllers\PretensionController;
 use App\Http\Controllers\TipoProcesoController;
 use App\Http\Controllers\TramitesController;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Contracts\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +75,7 @@ Route::group(
         Route::post('agregar', 'crearTipotramite');
         Route::post('actualizar', 'actualizarTipotramite');
         Route::post('eliminar', 'eliminarTipotramite');
+        Route::post('buscartipotramite','buscarTipoTramite');
         Route::post('retornartipotramite', 'retornarTipoTramites');
         Route::post('retornartipopretenciones', 'retornarTipoPretencion');
     }
@@ -90,6 +93,9 @@ Route::group(
         Route::post('editar', 'editarTramite');
         Route::post('listar', 'retornarTramites');
         Route::post('buscar', 'buscarTramite');
+        Route::post('retornarjuzgadobasico', 'retornarJuzgados');
+        Route::post('pretencion/buscar', 'buscarPretenciones');
+        Route::post('detalle/buscar', 'buscarDetalleProceso');
     }
 );
 
@@ -98,15 +104,15 @@ Route::group(
     [
         'prefix' => 'juzgado',
         /* 'middleware' => 'auth:sanctum', */
-        'controller' => TramitesController::class,
+        'controller' => JuzgadoController::class,
     ],
     function () {
         Route::post('retornarjuzgados', 'retornarJuzgados');
         Route::post('actualizar', 'editarJuzgados');
         Route::post('agregar', 'agregarJuzgados');
-        Route::post('retornarjuzgadobasico', 'retornarJuzgados');
-        Route::post('pretencion/buscar', 'buscarPretenciones');
-        Route::post('detalle/buscar', 'buscarDetalleProceso');
+        Route::post('buscar','buscarJuzgado');
+        Route::post('eliminar', 'eliminarJuzgado' );
+
     }
 );
 
@@ -131,9 +137,14 @@ Route::group(
         'controller' => CitaController::class,
     ],
     function () {
+
         Route::post('store', 'store');
         Route::post('update', 'update');
         Route::post('filtrarCitasAbogado', 'filtrarCitasAbogado');
+        Route::post('retornar','retornarCitas');
+        Route::post('tramites','retornarProcesos');
+        Route::post('buscar','buscarCita');
+        Route::post('eliminar','EliminarCita');
     }
 );
 

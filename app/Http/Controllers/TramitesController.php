@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\TipoProceso;
-
 use App\Models\Proceso;
 use App\Models\Persona;
 use App\Models\Cliente;
@@ -21,6 +21,8 @@ use Illuminate\Support\Facades\DB;
 
 class TramitesController extends Controller
 {
+
+    // ESTADO 0: CERRADO 1:EN CURSO 2:FINALIZADO
     public function crearTipotramite(Request $request){
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|min:5|max:40',
@@ -49,7 +51,9 @@ class TramitesController extends Controller
         }
     }
 
-    public function actualizarTipotramite(Request $request){
+    public function actualizarTipotramite(Request $request)
+    {
+
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|min:5|max:40',
             'descripcion'=>'required|min:10|max:60',
@@ -61,10 +65,12 @@ class TramitesController extends Controller
         {
             return response()->json(['errors'=>$validator->errors()->all(),'status'=>422]);
         }else{
+
             $tipoproceso=  TipoProceso::find($request->id);
             $tipoproceso->proceso = $request->nombre;
             $tipoproceso->descripcion = $request->descripcion;
             $tipoproceso->precioinicial = $request->precio;
+            $tipoproceso->estado = 1;
             $tipoproceso->save();
             if( $tipoproceso->save() ){
                 return response()->json([
@@ -78,6 +84,7 @@ class TramitesController extends Controller
         }
 
     }
+
     public function eliminarTipotramite(Request $request){
         $validator = Validator::make($request->all(), [
             'id'=>'required'
@@ -87,17 +94,25 @@ class TramitesController extends Controller
         {
             return response()->json(['errors'=>$validator->errors()->all(),'status'=>422]);
         }else{
-            $tipoproceso=  TipoProceso::find($request->id);
-            $res = $tipoproceso->delete();
-            if( $res ){
-                return response()->json([
-                    'success' => true
-                ]);
+            $mensaje ='';
+            $procesos = Proceso::where('tipoproceso_id', $request->id )->count();
+            if( $procesos>0 ){
+                $tipoproceso=  TipoProceso::find($request->id);
+                $tipoproceso->estado = 0;
+                $tipoproceso->save();
+                $mensaje = 'El registro no se eliminó porque ya forma parte de otros trámites en proceso, pero se deshabilitó para futuros trámites.';
             }else{
-                return response()->json([
-                    'success' => false
-                ]);
+                $tipoproceso=  TipoProceso::find($request->id);
+                $res = $tipoproceso->delete();
+                $mensaje = "El registro se elimino correctamente.";
             }
+
+            return response()->json([
+                'success' => true,
+                'mensaje' => $mensaje
+            ]);
+
+
         }
 
     }
@@ -226,6 +241,7 @@ class TramitesController extends Controller
     }
 
     public function buscarTramite(Request $request){
+
          $validator  = Validator::make($request->all(), [
             'idTramite' => 'required',
          ]);
@@ -278,6 +294,25 @@ class TramitesController extends Controller
          }
 
     }
+
+    public function buscarTipoTramite(Request $request){
+        $validator  = Validator::make($request->all(), [
+           'idTipoTramite' => 'required',
+        ]);
+
+        if( $validator->fails() ){
+           return response()->json(['errors'=>$validator->errors()->all(),'status'=>422]);
+        }else{
+
+            $ttramite =  TipoProceso::find( $request->idTipoTramite );
+
+            return response()->json([
+               'status' => 200,
+               'tipotramite'=>$ttramite
+           ]);
+        }
+
+   }
 
     public function buscarPretenciones(Request $request){
         $idTramite = $request->idTramite;

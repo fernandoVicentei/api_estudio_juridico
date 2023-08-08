@@ -12,11 +12,11 @@ class TipoProceso extends Model
     protected $primaryKey = 'id';
     public $timestamps = false;
     protected $fillable = [
-        'id',
+       'id',
        'proceso',
        'descripcion',
-       'precioinicial'
-
+       'precioinicial',
+       'estado',
     ];
 
     public function procesos()
