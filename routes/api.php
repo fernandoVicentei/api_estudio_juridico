@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArchivosController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
@@ -157,5 +158,23 @@ Route::group(
     ],
     function () {
         Route::post('update', 'update');
+    }
+);
+
+//ARCHIVOS
+Route::group(
+    [
+        'prefix' => 'archivos',
+        /* 'middleware' => 'auth:sanctum', */
+        'controller' => ArchivosController::class,
+    ],
+    function () {
+        Route::post('procesos','index');
+        Route::post('retornarproceso','retornarProceso');
+        Route::post('guardar','store');
+        Route::post('documentos','retornarTipoDoc');
+        Route::post('eliminar','eliminarDocumentos');
+        Route::get('descargar/{id}','descargar');
+
     }
 );

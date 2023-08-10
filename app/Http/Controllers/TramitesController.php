@@ -111,10 +111,7 @@ class TramitesController extends Controller
                 'success' => true,
                 'mensaje' => $mensaje
             ]);
-
-
         }
-
     }
 
     public function retornarTipoTramites(){
@@ -287,6 +284,7 @@ class TramitesController extends Controller
                 'detallePretencionDemandante'=> $pretencionCliente,
                 'detallePretencionDemandado'=> $pretencionDemandado,
             ];
+
             return response()->json([
                 'status' => 200,
                 'tramite'=>$proceso_R
