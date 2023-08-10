@@ -173,7 +173,8 @@ class ArchivosController extends Controller
         $archivo = Archivo::find($idArchivo);
         $rutaCompleta = public_path( $archivo->rutaArchivo);
         if (file_exists($rutaCompleta)) {
-            return Response::download($rutaCompleta);
+            //return Response::download($rutaCompleta);
+            return response()->download($rutaCompleta);
         } else {
             abort(404);
         }
