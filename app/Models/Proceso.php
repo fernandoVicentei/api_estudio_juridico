@@ -23,6 +23,8 @@ class Proceso extends Model
         'juzgado_id',
 
     ];
+
+    
     public function archivos()
     {
         return $this->belongsToMany(Archivo::class, 'archivos_id'  );

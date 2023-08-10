@@ -1,14 +1,17 @@
 <?php
 
+use App\Http\Controllers\ArchivosController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CitaController;
 use App\Http\Controllers\DatosPersonales;
+use App\Http\Controllers\JuzgadoController;
 use App\Http\Controllers\PretensionController;
 use App\Http\Controllers\TipoProcesoController;
 use App\Http\Controllers\TramitesController;
 use Illuminate\Support\Facades\Route;
+use Spatie\Permission\Contracts\Role;
 
 /*
 |--------------------------------------------------------------------------
@@ -119,7 +122,7 @@ Route::group(
     [
         'prefix' => 'juzgado',
         /* 'middleware' => 'auth:sanctum', */
-        'controller' => TramitesController::class,
+        'controller' => JuzgadoController::class,
     ],
     function () {
         Route::post('retornarjuzgados', 'retornarJuzgados')
@@ -134,6 +137,9 @@ Route::group(
             ->middleware('permission:juzgados.pretencionbuscar');
         Route::post('detalle/buscar', 'buscarDetalleProceso')
             ->middleware('permission:juzgados.detallebuscar');
+        Route::post('buscar','buscarJuzgado');
+        Route::post('eliminar', 'eliminarJuzgado' );
+
     }
 );
 
@@ -160,12 +166,17 @@ Route::group(
         'controller' => CitaController::class,
     ],
     function () {
+
         Route::post('store', 'store');
             /* ->middleware('citas.store'); */
         Route::post('update', 'update');
             /* ->middleware('citas.update'); */
         Route::post('filtrarCitasAbogado', 'filtrarCitasAbogado');
             /* ->middleware('citas.filtrarCitasAbogado'); */
+        Route::post('retornar','retornarCitas');
+        Route::post('tramites','retornarProcesos');
+        Route::post('buscar','buscarCita');
+        Route::post('eliminar','EliminarCita');
     }
 );
 
@@ -179,5 +190,23 @@ Route::group(
     function () {
         Route::post('update', 'update')
             ->middleware('permission:pretensiones.update');
+    }
+);
+
+//ARCHIVOS
+Route::group(
+    [
+        'prefix' => 'archivos',
+        /* 'middleware' => 'auth:sanctum', */
+        'controller' => ArchivosController::class,
+    ],
+    function () {
+        Route::post('procesos','index');
+        Route::post('retornarproceso','retornarProceso');
+        Route::post('guardar','store');
+        Route::post('documentos','retornarTipoDoc');
+        Route::post('eliminar','eliminarDocumentos');
+        Route::get('descargar/{id}','descargar');
+
     }
 );
